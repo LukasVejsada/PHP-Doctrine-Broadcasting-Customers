@@ -1,0 +1,10 @@
+{varType App\Model\Entity\Customer $customer}
+
+{block content}
+    <h1>Editace zákazníka</h1>
+    {control customerForm}
+    <hr/>
+    <a href="{link 'Program:add' $customer->getId()}"
+       class="btn btn-default btn-primary">+ Přidat program</a>
+    {control programGrid}
+{/block}

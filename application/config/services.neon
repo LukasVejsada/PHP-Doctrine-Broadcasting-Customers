@@ -1,0 +1,14 @@
+services:
+	- App\Router\RouterFactory::createRouter
+
+	#Forms
+	- App\Components\Forms\CustomerForm\ICustomerForm
+	- App\Components\Forms\ProgramForm\IProgramForm
+
+	#Grids
+	- App\Components\Grids\CustomerGrid\ICustomerGrid
+	- App\Components\Grids\ProgramGrid\IProgramGrid
+
+	#Facades
+	- App\Model\Facade\CustomerFacade
+	- App\Model\Facade\ProgramFacade

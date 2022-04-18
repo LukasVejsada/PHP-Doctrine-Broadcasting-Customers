@@ -1,0 +1,7 @@
+parameters:
+    database:
+        host: mysql
+        user: broadcasting_customers
+        password: uln23pm71z
+        dbname: broadcasting_customers
+        port:

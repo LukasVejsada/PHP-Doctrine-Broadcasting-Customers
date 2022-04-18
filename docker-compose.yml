@@ -1,0 +1,33 @@
+version: "3.1"
+services:
+  mysql:
+    image: ${MYSQL_CONTAINER}
+    restart: always
+    container_name: ${APP_NAME}_mysql
+    working_dir: /app
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_HOST_HTTP_PORT}:3306"
+    command: [ 'mysqld', '--character-set-server=utf8', '--collation-server=utf8_czech_ci' ]
+
+  php-80:
+    image: ${PHP_CONTAINER}
+    restart: always
+    container_name: ${APP_NAME}_php
+    ports:
+      - "${HOST_HTTP_PORT}:80"
+      - "${HOST_HTTPS_PORT}:443"
+    working_dir: /app
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/www
+      - DEBUG_MODE=${DEBUG_MODE}
+    volumes:
+      - ./application:/app
+      - ./docker/vhost.conf:/opt/docker/etc/nginx/vhost.conf
+      - ./docker/webp.conf:/opt/docker/etc/nginx/conf.d/webp.conf
+
+# postfix start docker-service-enable postfix

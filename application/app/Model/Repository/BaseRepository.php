@@ -1,0 +1,56 @@
+<?php declare(strict_types=1);
+
+namespace App\Model\Repository;
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+
+/**
+ * @template TEntityClass
+ * @extends EntityRepository<TEntityClass>
+ */
+abstract class BaseRepository extends EntityRepository
+{
+
+    /**
+     * Fetches all records like $key => $value pairs
+     *
+     * @param mixed[] $criteria
+     * @param mixed[] $orderBy
+     * @return mixed[]
+     */
+    public function findPairs(?string $key, string $value, array $criteria = [], array $orderBy = []): array
+    {
+        if ($key === null) {
+            $key = $this->getClassMetadata()->getSingleIdentifierFieldName();
+        }
+
+        $qb = $this->createQueryBuilder('e')
+            ->select(['e.' . $value, 'e.' . $key])
+            ->resetDQLPart('from')
+            ->from($this->getEntityName(), 'e', 'e.' . $key);
+
+        foreach ($criteria as $k => $v) {
+            if (is_array($v)) {
+                $qb->andWhere(sprintf('e.%s IN(:%s)', $key, $key))->setParameter($key, array_values($v));
+            } else {
+                $qb->andWhere(sprintf('e.%s = :%s', $key, $key))->setParameter($key, $v);
+            }
+        }
+
+        foreach ($orderBy as $column => $order) {
+            $qb->addOrderBy($column, $order);
+        }
+
+        return array_map(function ($row) {
+            return reset($row);
+        }, $qb->getQuery()->getArrayResult());
+    }
+
+    /** @return EntityManager */
+    public function getEM(): EntityManager
+    {
+        return $this->_em;
+    }
+
+}
