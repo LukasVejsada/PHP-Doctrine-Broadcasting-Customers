@@ -7,6 +7,7 @@ use App\Model\Entity\Customer;
 use App\Model\Entity\Program;
 use App\Model\Facade\ProgramFacade;
 use Nette\Utils\Html;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\DataSource\DoctrineDataSource;
 use Ublaboo\DataGrid\Localization\SimpleTranslator;
@@ -55,18 +56,16 @@ class ProgramGrid extends BaseControl
         }
 
         $datasource = new DoctrineDataSource($programQuery, 'p.id');
+        $grid->setDefaultPerPage(50);
         $grid->setDataSource($datasource);
 
         $grid->setStrictSessionFilterValues(false);
         $grid->setDefaultPerPage(50);
-        $grid->setDefaultSort(['broadcastingDate' => 'ASC']);
+        $grid->setRememberState(false);
 
-        $grid->addColumnText('id', 'id')
-            ->setSortable();
+        $grid->addColumnText('id', 'id');
 
-        $grid->addColumnText('name', 'Název')
-            ->setSortable()
-            ->setFilterText();
+        $grid->addColumnText('name', 'Název');
 
         if (!$customer) {
             $grid->addColumnText('customer', 'Zákazník')
@@ -76,18 +75,12 @@ class ProgramGrid extends BaseControl
         }
 
         $grid->addColumnDateTime('broadcastingDate', 'Vysílací čas')
-            ->setFormat('d.m.y H:i:s')
-            ->setSortable()
-            ->setFilterDate();
+            ->setFormat('d.m.Y H:i:s');
 
-        $grid->addColumnText('description', 'Popis')
-            ->setSortable()
-            ->setFilterText();
+        $grid->addColumnText('description', 'Popis');
 
         $grid->addColumnDateTime('createdDate', 'Datum vytvoření')
-            ->setFormat('d.m.y H:i:s')
-            ->setSortable()
-            ->setFilterDate();
+            ->setFormat('d.m.Y H:i:s');
 
         $grid->addAction('edit', 'Editovat', 'Program:edit')
             ->setIcon('edit')
@@ -103,7 +96,9 @@ class ProgramGrid extends BaseControl
                 $aLink->setText('Smazat');
                 $aLink->setAttribute('class', 'btn btn-xs btn-default btn-secondary');
                 return $aLink;
-            });
+            })
+            ->setConfirmation(
+                new StringConfirmation('Opravdu chcete tohoto zákazníka smazat?'));
 
         $translator = new SimpleTranslator([
             'ublaboo_datagrid.no_item_found_reset' => 'Žádné položky nenalezeny. Filtr můžete vynulovat',

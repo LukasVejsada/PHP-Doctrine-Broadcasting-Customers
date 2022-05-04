@@ -46,23 +46,17 @@ class CustomerGrid extends BaseControl
 
         $grid->setStrictSessionFilterValues(false);
         $grid->setDefaultPerPage(50);
-        $grid->setDefaultSort(['id' => 'DESC']);
+        $grid->setRememberState(false);
 
-        $grid->addColumnText('id', 'id')
-            ->setSortable();
 
-        $grid->addColumnText('name', 'Název')
-            ->setSortable()
-            ->setFilterText();
+        $grid->addColumnText('id', 'id');
 
-        $grid->addColumnText('note', 'Poznámka')
-            ->setSortable()
-            ->setFilterText();
+        $grid->addColumnText('name', 'Název');
+
+        $grid->addColumnText('note', 'Poznámka');
 
         $grid->addColumnDateTime('createdDate', 'Datum vytvoření')
-            ->setFormat('d.m.y H:i:s')
-            ->setSortable()
-            ->setFilterDate();
+            ->setFormat('d.m.Y H:i:s');
 
         $grid->addAction('edit', 'Editovat', 'Customer:edit')
             ->setIcon('edit')
