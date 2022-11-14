@@ -35,7 +35,7 @@ final class CustomerPresenter extends BasePresenter
 
     public function actionEdit(?string $id): void
     {
-        /** @var Customer $customer */
+        /** @var Customer|null $customer */
         $customer = $this->getEM()->getRepository(Customer::class)->find($id);
         if (!$customer) {
             $this->flashMessage('Zákazník neexistuje.');
